@@ -18,6 +18,11 @@ build:	fmt bin
 deps:
 	@GOPATH=$(GOPATH) go get -u "github.com/fapian/geojson2svg/pkg/geojson2svg"
 	@GOPATH=$(GOPATH) go get -u "github.com/whosonfirst/go-whosonfirst-geojson-v2"
+	@GOPATH=$(GOPATH) go get -u "github.com/whosonfirst/go-whosonfirst-spr"
+
+# if you're wondering about the 'rm -rf' stuff below it's because Go is
+# weird... https://vanduuren.xyz/2017/golang-vendoring-interface-confusion/
+# (20170912/thisisaaronland)
 
 vendor-deps: rmdeps deps
 	if test ! -d vendor; then mkdir vendor; fi
@@ -25,6 +30,8 @@ vendor-deps: rmdeps deps
 	cp -r src vendor
 	find vendor -name '.git' -print -type d -exec rm -rf {} +
 	rm -rf src
+	rm -rf vendor/github.com/whosonfirst/go-whosonfirst-geojson-v2/vendor/github.com/whosonfirst/go-whosonfirst-spr
+	rm -rf vendor/github.com/whosonfirst/go-whosonfirst-geojson-v2/vendor/github.com/whosonfirst/go-whosonfirst-flags
 
 fmt:
 	go fmt *.go

@@ -4,6 +4,7 @@ import (
 	"github.com/fapian/geojson2svg/pkg/geojson2svg"
 	"github.com/whosonfirst/go-whosonfirst-geojson-v2"
 	"github.com/whosonfirst/go-whosonfirst-geojson-v2/properties/geometry"
+	"github.com/whosonfirst/go-whosonfirst-spr/util"
 	"io"
 	"os"
 )
@@ -41,7 +42,21 @@ func FeatureToSVG(f geojson.Feature, opts *Options) error {
 		return err
 	}
 
-	rsp := s.Draw(opts.Width, opts.Height)
+	spr, err := f.SPR()
+
+	if err != nil {
+		return err
+	}
+
+	attrs, err := util.SPRToMap(spr)
+
+	if err != nil {
+		return err
+	}
+
+	s_opts := geojson2svg.WithAttributes(attrs)
+
+	rsp := s.Draw(opts.Width, opts.Height, s_opts)
 	_, err = opts.Writer.Write([]byte(rsp))
 
 	if err != nil {

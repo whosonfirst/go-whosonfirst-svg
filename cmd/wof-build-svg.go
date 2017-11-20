@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"github.com/facebookgo/atomicfile"
 	"github.com/whosonfirst/go-whosonfirst-geojson-v2/feature"
 	"github.com/whosonfirst/go-whosonfirst-index"
 	"github.com/whosonfirst/go-whosonfirst-svg"
@@ -10,6 +11,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 func main() {
@@ -51,8 +53,29 @@ func main() {
 		// update to write new file here - take fname and replace ".geojson" with ".svg"
 		// unless this is index.STDIN in which case... uh, what ? I guess just STDOUT...
 
+		if path == index.STDIN {
+			svg.FeatureToSVG(f, o)
+			return nil
+		}
+
+		root := filepath.Dir(path)
+		fname := filepath.Base(path)
+		ext := filepath.Ext(path)
+
+		fname = strings.Replace(fname, ext, ".svg", -1)
+		svg_path := filepath.Join(root, fname)
+
+		wr, err := atomicfile.New(svg_path, os.FileMode(0644))
+
+		if err != nil {
+			wr.Abort()
+			return err
+		}
+
+		o.Writer = wr
 		svg.FeatureToSVG(f, o)
-		return nil
+		
+		return wr.Close()
 	}
 
 	idx, err := index.NewIndexer(*mode, cb)

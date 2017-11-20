@@ -9,14 +9,19 @@ import (
 
 func main() {
 
-	flag.Parse()
+	var width = flag.Float64("width", 1024., "...")
+	var height = flag.Float64("height", 1024., "...")
 
 	flag.Parse()
-	args := flag.Args()
 
 	o := svg.NewDefaultOptions()
 
-	for _, path := range args {
+	o.Width = *width
+	o.Height = *height
+
+	// TO DO: custom o.Writer goes here...
+
+	for _, path := range flag.Args() {
 
 		f, err := feature.LoadFeatureFromFile(path)
 

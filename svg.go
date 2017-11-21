@@ -1,7 +1,7 @@
 package svg
 
 import (
-	"github.com/fapian/geojson2svg/pkg/geojson2svg"
+	"github.com/whosonfirst/geojson2svg/pkg/geojson2svg"
 	"github.com/whosonfirst/go-whosonfirst-geojson-v2"
 	"github.com/whosonfirst/go-whosonfirst-geojson-v2/properties/geometry"
 	"github.com/whosonfirst/go-whosonfirst-spr/util"

@@ -17,7 +17,8 @@ build:	fmt bin
 
 deps:
 	@GOPATH=$(GOPATH) go get -u "github.com/facebookgo/atomicfile"
-	@GOPATH=$(GOPATH) go get -u "github.com/fapian/geojson2svg/pkg/geojson2svg"
+	# @GOPATH=$(GOPATH) go get -u "github.com/fapian/geojson2svg/pkg/geojson2svg"
+	@GOPATH=$(GOPATH) go get -u "github.com/whosonfirst/geojson2svg/pkg/geojson2svg"
 	@GOPATH=$(GOPATH) go get -u "github.com/whosonfirst/go-whosonfirst-geojson-v2"
 	@GOPATH=$(GOPATH) go get -u "github.com/whosonfirst/go-whosonfirst-index"
 	@GOPATH=$(GOPATH) go get -u "github.com/whosonfirst/go-whosonfirst-spr"

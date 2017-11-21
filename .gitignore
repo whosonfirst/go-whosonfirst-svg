@@ -2,6 +2,7 @@
 pkg
 src
 !vendor/src
+!vendor/github.com/fapian/geojson2svg/pkg
 bin
 !bin/.gitignore
 *.log

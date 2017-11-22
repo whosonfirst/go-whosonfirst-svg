@@ -74,7 +74,7 @@ func main() {
 
 		o.Writer = wr
 		svg.FeatureToSVG(f, o)
-		
+
 		return wr.Close()
 	}
 

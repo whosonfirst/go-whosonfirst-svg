@@ -1,12 +1,14 @@
 package svg
 
 import (
-	"github.com/whosonfirst/geojson2svg/pkg/geojson2svg"
+	"fmt"
+	"github.com/fapian/geojson2svg/pkg/geojson2svg"
 	"github.com/whosonfirst/go-whosonfirst-geojson-v2"
 	"github.com/whosonfirst/go-whosonfirst-geojson-v2/properties/geometry"
 	"github.com/whosonfirst/go-whosonfirst-spr/util"
 	"io"
 	"os"
+	"strings"
 )
 
 type Options struct {
@@ -52,6 +54,36 @@ func FeatureToSVG(f geojson.Feature, opts *Options) error {
 
 	if err != nil {
 		return err
+	}
+
+	namespaces := map[string]string{
+		"xmlns": "http://www.w3.org/2000/svg",
+	}
+
+	for k, _ := range attrs {
+
+		parts := strings.Split(k, ":")
+
+		if len(parts) != 2 {
+			continue
+		}
+
+		prefix := parts[0]
+
+		_, ok := namespaces[prefix]
+
+		if ok {
+			continue
+		}
+
+		ns := fmt.Sprintf("xmlns:%s", prefix)
+		uri := fmt.Sprintf("x-urn:namespaces#%s", prefix)
+
+		namespaces[ns] = uri
+	}
+
+	for ns, uri := range namespaces {
+		attrs[ns] = uri
 	}
 
 	s_opts := geojson2svg.WithAttributes(attrs)

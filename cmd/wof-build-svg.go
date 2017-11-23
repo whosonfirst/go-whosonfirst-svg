@@ -47,7 +47,9 @@ func main() {
 		f, err := feature.LoadFeatureFromFile(path)
 
 		if err != nil {
-			return err
+			// because this: https://github.com/whosonfirst/go-whosonfirst-svg/issues/3
+			// log.Println("SKIP", path)
+			return nil
 		}
 
 		// update to write new file here - take fname and replace ".geojson" with ".svg"

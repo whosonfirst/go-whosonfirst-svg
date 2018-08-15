@@ -12,21 +12,38 @@ import (
 	"strings"
 )
 
+type StyleFunction func(f geojson.Feature) (map[string]string, error)
+
 type Options struct {
-	Width  float64
-	Height float64
-	Writer io.Writer
+	Width         float64
+	Height        float64
+	Writer        io.Writer
+	StyleFunction StyleFunction
 }
 
 func NewDefaultOptions() *Options {
 
+	f := NewDefaultStyleFunction()
+
 	opts := Options{
-		Width:  1024.0,
-		Height: 1024.0,
-		Writer: os.Stdout,
+		Width:         1024.0,
+		Height:        1024.0,
+		Writer:        os.Stdout,
+		StyleFunction: f,
 	}
 
 	return &opts
+}
+
+func NewDefaultStyleFunction() StyleFunction {
+
+	style_func := func(f geojson.Feature) (map[string]string, error) {
+
+		attrs := make(map[string]string)
+		return attrs, nil
+	}
+
+	return style_func
 }
 
 func FeatureToSVG(f geojson.Feature, opts *Options) error {
@@ -77,6 +94,16 @@ func FeatureToSVG(f geojson.Feature, opts *Options) error {
 
 	if err != nil {
 		return err
+	}
+
+	style_attrs, err := opts.StyleFunction(f)
+
+	if err != nil {
+		return err
+	}
+
+	for k, v := range style_attrs {
+		attrs[k] = v
 	}
 
 	attrs["viewBox"] = fmt.Sprintf("0 0 %0.2f %0.2f", w, h)

@@ -83,6 +83,27 @@ func NewDopplrStyleFunction() StyleFunction {
 	return style_func
 }
 
+func NewFillStyleFunction(colour string) StyleFunction {
+
+	default_styles := NewDefaultStyleFunction()
+
+	style_func := func(f geojson.Feature) (map[string]string, error) {
+
+		attrs, err := default_styles(f)
+
+		if err != nil {
+			return nil, err
+		}
+
+		fill := fmt.Sprintf("fill: %s", colour)
+		attrs["style"] = fill
+
+		return attrs, nil
+	}
+
+	return style_func
+}
+
 func FeatureToSVG(f geojson.Feature, opts *Options) error {
 
 	bboxes, err := f.BoundingBoxes()

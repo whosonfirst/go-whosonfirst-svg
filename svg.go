@@ -3,7 +3,7 @@ package svg
 import (
 	"crypto/md5"
 	"encoding/hex"
-	"errors"
+	_ "errors"
 	"fmt"
 	"github.com/fapian/geojson2svg/pkg/geojson2svg"
 	"github.com/whosonfirst/go-whosonfirst-geojson-v2"
@@ -141,6 +141,7 @@ func FeatureToSVG(f geojson.Feature, opts *Options) error {
 
 	for k, v := range style_attrs {
 
+		/*
 		ok := false
 
 		switch k {
@@ -158,7 +159,8 @@ func FeatureToSVG(f geojson.Feature, opts *Options) error {
 			msg := fmt.Sprintf("Invalid style attribute '%s'", k)
 			return errors.New(msg)
 		}
-
+		*/
+		
 		attrs[k] = v
 	}
 

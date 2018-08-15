@@ -141,6 +141,8 @@ func FeatureToSVG(f geojson.Feature, opts *Options) error {
 
 	for k, v := range style_attrs {
 
+		// TO DO: consult this: https://github.com/srwiley/oksvg/blob/master/doc/SVG_Element_List.txt
+		
 		/*
 		ok := false
 

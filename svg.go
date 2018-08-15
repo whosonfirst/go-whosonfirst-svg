@@ -1,6 +1,9 @@
 package svg
 
 import (
+	"crypto/md5"
+	"encoding/hex"
+	"errors"
 	"fmt"
 	"github.com/fapian/geojson2svg/pkg/geojson2svg"
 	"github.com/whosonfirst/go-whosonfirst-geojson-v2"
@@ -39,7 +42,41 @@ func NewDefaultStyleFunction() StyleFunction {
 
 	style_func := func(f geojson.Feature) (map[string]string, error) {
 
+		id := fmt.Sprintf("wof-%s", f.Id())
+		pt := fmt.Sprintf("wof-%s", f.Placetype())
+
 		attrs := make(map[string]string)
+
+		attrs["class"] = pt
+		attrs["id"] = id
+
+		return attrs, nil
+	}
+
+	return style_func
+}
+
+func NewDopplrStyleFunction() StyleFunction {
+
+	default_styles := NewDefaultStyleFunction()
+
+	style_func := func(f geojson.Feature) (map[string]string, error) {
+
+		attrs, err := default_styles(f)
+
+		if err != nil {
+			return nil, err
+		}
+
+		pt := f.Placetype()
+
+		fill := fmt.Sprintf("fill: %s", str2hex(pt))
+
+		styles := make([]string, 0)
+		styles = append(styles, fill)
+
+		attrs["style"] = strings.Join(styles, ";")
+
 		return attrs, nil
 	}
 
@@ -103,6 +140,25 @@ func FeatureToSVG(f geojson.Feature, opts *Options) error {
 	}
 
 	for k, v := range style_attrs {
+
+		ok := false
+
+		switch k {
+		case "id":
+			ok = true
+		case "class":
+			ok = true
+		case "style":
+			ok = true
+		default:
+			// pass
+		}
+
+		if !ok {
+			msg := fmt.Sprintf("Invalid style attribute '%s'", k)
+			return errors.New(msg)
+		}
+
 		attrs[k] = v
 	}
 
@@ -148,4 +204,15 @@ func FeatureToSVG(f geojson.Feature, opts *Options) error {
 	}
 
 	return nil
+}
+
+func str2hex(text string) string {
+
+	hasher := md5.New()
+	hasher.Write([]byte(text))
+
+	enc := hex.EncodeToString(hasher.Sum(nil))
+	code := enc[0:6]
+
+	return fmt.Sprintf("#%s", code)
 }

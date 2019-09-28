@@ -20,7 +20,7 @@ type StyleFunction func(f geojson.Feature) (map[string]string, error)
 type Options struct {
 	Width         float64
 	Height        float64
-	Mercator bool
+	Mercator      bool
 	Writer        io.Writer
 	StyleFunction StyleFunction
 }
@@ -33,7 +33,7 @@ func NewDefaultOptions() *Options {
 		Width:         1024.0,
 		Height:        1024.0,
 		Writer:        os.Stdout,
-		Mercator: false,
+		Mercator:      false,
 		StyleFunction: f,
 	}
 
@@ -130,7 +130,7 @@ func FeatureToSVG(f geojson.Feature, opts *Options) error {
 
 	s := geojson_svg.New()
 	s.Mercator = opts.Mercator
-	
+
 	err = s.AddGeometry(geom)
 
 	if err != nil {

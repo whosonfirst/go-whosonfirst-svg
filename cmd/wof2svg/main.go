@@ -21,7 +21,7 @@ func main() {
 	o.Width = *width
 	o.Height = *height
 	o.Mercator = *mercator
-	
+
 	for _, path := range flag.Args() {
 
 		f, err := feature.LoadFeatureFromFile(path)

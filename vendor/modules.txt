@@ -19,12 +19,12 @@ github.com/tidwall/gjson
 github.com/tidwall/match
 # github.com/tidwall/pretty v1.0.0
 github.com/tidwall/pretty
-# github.com/whosonfirst/go-geojson-svg v0.0.2
+# github.com/whosonfirst/go-geojson-svg v0.0.3
 github.com/whosonfirst/go-geojson-svg
 # github.com/whosonfirst/go-whosonfirst-flags v0.1.0
 github.com/whosonfirst/go-whosonfirst-flags
 github.com/whosonfirst/go-whosonfirst-flags/existential
-# github.com/whosonfirst/go-whosonfirst-geojson-v2 v0.12.0
+# github.com/whosonfirst/go-whosonfirst-geojson-v2 v0.12.2
 github.com/whosonfirst/go-whosonfirst-geojson-v2
 github.com/whosonfirst/go-whosonfirst-geojson-v2/properties/geometry
 github.com/whosonfirst/go-whosonfirst-geojson-v2/feature
@@ -33,7 +33,7 @@ github.com/whosonfirst/go-whosonfirst-geojson-v2/geometry
 github.com/whosonfirst/go-whosonfirst-geojson-v2/properties/whosonfirst
 # github.com/whosonfirst/go-whosonfirst-hash v0.1.0
 github.com/whosonfirst/go-whosonfirst-hash
-# github.com/whosonfirst/go-whosonfirst-index v0.2.2
+# github.com/whosonfirst/go-whosonfirst-index v0.2.3
 github.com/whosonfirst/go-whosonfirst-index
 # github.com/whosonfirst/go-whosonfirst-log v0.1.0
 github.com/whosonfirst/go-whosonfirst-log

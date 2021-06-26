@@ -5,7 +5,8 @@ import (
 	"flag"
 	"github.com/facebookgo/atomicfile"
 	"github.com/whosonfirst/go-whosonfirst-geojson-v2/feature"
-	"github.com/whosonfirst/go-whosonfirst-index"
+	"github.com/whosonfirst/go-whosonfirst-iterate/iterator"
+	"github.com/whosonfirst/go-whosonfirst-iterate/emitter"	
 	"github.com/whosonfirst/go-whosonfirst-svg"
 	"io"
 	"log"
@@ -27,15 +28,15 @@ func main() {
 	o.Width = *width
 	o.Height = *height
 
-	cb := func(ctx context.Context, fh io.Reader, args ...interface{}) error {
+	cb := func(ctx context.Context, fh io.ReadSeeker, args ...interface{}) error {
 
-		path, err := index.PathForContext(ctx)
+		path, err := emitter.PathForContext(ctx)
 
 		if err != nil {
 			return err
 		}
 
-		if path != index.STDIN {
+		if path != emitter.STDIN {
 
 			ext := filepath.Ext(path)
 
@@ -55,7 +56,7 @@ func main() {
 		// update to write new file here - take fname and replace ".geojson" with ".svg"
 		// unless this is index.STDIN in which case... uh, what ? I guess just STDOUT...
 
-		if path == index.STDIN {
+		if path == emitter.STDIN {
 			svg.FeatureToSVG(f, o)
 			return nil
 		}
@@ -80,14 +81,16 @@ func main() {
 		return wr.Close()
 	}
 
-	idx, err := index.NewIndexer(*mode, cb)
+	ctx := context.Background()
+	
+	iter, err := iterator.NewIterator(ctx, *mode, cb)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	sources := flag.Args()
-	err = idx.IndexPaths(sources)
+	err = iter.IterateURIs(ctx, sources...)
 
 	if err != nil {
 		log.Fatal(err)

@@ -5,8 +5,8 @@ import (
 	"flag"
 	"github.com/facebookgo/atomicfile"
 	"github.com/whosonfirst/go-whosonfirst-geojson-v2/feature"
+	"github.com/whosonfirst/go-whosonfirst-iterate/emitter"
 	"github.com/whosonfirst/go-whosonfirst-iterate/iterator"
-	"github.com/whosonfirst/go-whosonfirst-iterate/emitter"	
 	"github.com/whosonfirst/go-whosonfirst-svg"
 	"io"
 	"log"
@@ -82,7 +82,7 @@ func main() {
 	}
 
 	ctx := context.Background()
-	
+
 	iter, err := iterator.NewIterator(ctx, *mode, cb)
 
 	if err != nil {

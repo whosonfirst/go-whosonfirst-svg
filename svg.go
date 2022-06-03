@@ -3,19 +3,15 @@ package svg
 import (
 	"crypto/md5"
 	"encoding/hex"
-	_ "errors"
 	"fmt"
 	geojson_svg "github.com/whosonfirst/go-geojson-svg"
-	"github.com/whosonfirst/go-whosonfirst-geojson-v2"
-	"github.com/whosonfirst/go-whosonfirst-geojson-v2/properties/geometry"
 	"github.com/whosonfirst/go-whosonfirst-spr/v2/util"
 	"io"
-	_ "log"
 	"os"
 	"strings"
 )
 
-type StyleFunction func(f geojson.Feature) (map[string]string, error)
+type StyleFunction func(f []byte) (map[string]string, error)
 
 type Options struct {
 	Width         float64
@@ -54,7 +50,7 @@ func NewDopplrStyleFunction() StyleFunction {
 
 	default_styles := NewDefaultStyleFunction()
 
-	style_func := func(f geojson.Feature) (map[string]string, error) {
+	style_func := func(f []byte) (map[string]string, error) {
 
 		attrs, err := default_styles(f)
 
@@ -81,7 +77,7 @@ func NewFillStyleFunction(colour string) StyleFunction {
 
 	default_styles := NewDefaultStyleFunction()
 
-	style_func := func(f geojson.Feature) (map[string]string, error) {
+	style_func := func(f []byte) (map[string]string, error) {
 
 		attrs, err := default_styles(f)
 
@@ -98,15 +94,17 @@ func NewFillStyleFunction(colour string) StyleFunction {
 	return style_func
 }
 
-func FeatureToSVG(f geojson.Feature, opts *Options) error {
+func FeatureToSVG(f []byte, opts *Options) error {
 
-	bboxes, err := f.BoundingBoxes()
+	geom, err := geometry.Geometry(f)
 
 	if err != nil {
 		return err
 	}
 
-	mbr := bboxes.MBR()
+	mbr := geom.Bound()
+
+	// I AM HERE...
 
 	mbr_w := mbr.Width()
 	mbr_h := mbr.Height()

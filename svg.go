@@ -7,6 +7,7 @@ import (
 	geojson_svg "github.com/whosonfirst/go-geojson-svg"
 	"github.com/whosonfirst/go-whosonfirst-feature/geometry"
 	"github.com/whosonfirst/go-whosonfirst-feature/properties"
+	"github.com/whosonfirst/go-whosonfirst-spr/v2"
 	"github.com/whosonfirst/go-whosonfirst-spr/v2/util"
 	"io"
 	"os"
@@ -126,7 +127,7 @@ func FeatureToSVG(f []byte, opts *Options) error {
 		w = w * (mbr_w / mbr_h)
 	}
 
-	geom, err := geometry.ToString(f)
+	enc_geom, err := geom.MarshalJSON()
 
 	if err != nil {
 		return err
@@ -135,19 +136,19 @@ func FeatureToSVG(f []byte, opts *Options) error {
 	s := geojson_svg.New()
 	s.Mercator = opts.Mercator
 
-	err = s.AddGeometry(geom)
+	err = s.AddGeometry(string(enc_geom))
 
 	if err != nil {
 		return err
 	}
 
-	spr, err := f.SPR()
+	wof_spr, err := spr.WhosOnFirstSPR(f)
 
 	if err != nil {
 		return err
 	}
 
-	attrs, err := util.SPRToMap(spr)
+	attrs, err := util.SPRToMap(wof_spr)
 
 	if err != nil {
 		return err

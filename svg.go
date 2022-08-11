@@ -5,6 +5,8 @@ import (
 	"encoding/hex"
 	"fmt"
 	geojson_svg "github.com/whosonfirst/go-geojson-svg"
+	"github.com/whosonfirst/go-whosonfirst-feature/geometry"
+	"github.com/whosonfirst/go-whosonfirst-feature/properties"
 	"github.com/whosonfirst/go-whosonfirst-spr/v2/util"
 	"io"
 	"os"
@@ -38,7 +40,7 @@ func NewDefaultOptions() *Options {
 
 func NewDefaultStyleFunction() StyleFunction {
 
-	style_func := func(f geojson.Feature) (map[string]string, error) {
+	style_func := func(boyd []byte) (map[string]string, error) {
 		attrs := make(map[string]string)
 		return attrs, nil
 	}
@@ -58,7 +60,11 @@ func NewDopplrStyleFunction() StyleFunction {
 			return nil, err
 		}
 
-		pt := f.Placetype()
+		pt, err := properties.Placetype(f)
+
+		if err != nil {
+			return nil, err
+		}
 
 		fill := fmt.Sprintf("fill: %s", str2hex(pt))
 
@@ -182,10 +188,22 @@ func FeatureToSVG(f []byte, opts *Options) error {
 
 	attrs["viewBox"] = fmt.Sprintf("0 0 %0.2f %0.2f", w, h)
 
-	id := fmt.Sprintf("wof-%s", f.Id())
+	wof_id, err := properties.Id(f)
+
+	if err != nil {
+		return err
+	}
+
+	wof_pt, err := properties.Placetype(f)
+
+	if err != nil {
+		return err
+	}
+
+	id := fmt.Sprintf("wof-%s", wof_id)
 	attrs["id"] = id
 
-	pt := fmt.Sprintf("wof-%s", f.Placetype())
+	pt := fmt.Sprintf("wof-%s", wof_pt)
 
 	class, _ := attrs["class"]
 	class = fmt.Sprintf("%s %s", class, pt)

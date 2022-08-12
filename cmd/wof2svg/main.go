@@ -2,10 +2,10 @@ package main
 
 import (
 	"flag"
-	_ "github.com/facebookgo/atomicfile"
-	"github.com/whosonfirst/go-whosonfirst-geojson-v2/feature"
 	"github.com/whosonfirst/go-whosonfirst-svg"
+	"io"
 	"log"
+	"os"
 )
 
 func main() {
@@ -24,13 +24,21 @@ func main() {
 
 	for _, path := range flag.Args() {
 
-		f, err := feature.LoadFeatureFromFile(path)
+		r, err := os.Open(path)
 
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		err = svg.FeatureToSVG(f, o)
+		defer r.Close()
+
+		body, err := io.ReadAll(r)
+
+		if err != nil {
+			log.Fatalf("Failed to read %s, %v", path, err)
+		}
+
+		err = svg.FeatureToSVG(body, o)
 
 		if err != nil {
 			log.Fatal(err)

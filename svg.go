@@ -109,12 +109,11 @@ func FeatureToSVG(f []byte, opts *Options) error {
 		return err
 	}
 
-	mbr := geom.Bound()
+	orb_geom := geom.Geometry()
+	mbr := orb_geom.Bound()
 
-	// I AM HERE...
-
-	mbr_w := mbr.Width()
-	mbr_h := mbr.Height()
+	mbr_w := mbr.Max[0] - mbr.Min[0]
+	mbr_h := mbr.Max[1] - mbr.Min[1]
 
 	w := opts.Width
 	h := opts.Height

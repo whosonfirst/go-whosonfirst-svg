@@ -4,9 +4,8 @@ import (
 	"context"
 	"flag"
 	"github.com/facebookgo/atomicfile"
-	"github.com/whosonfirst/go-whosonfirst-geojson-v2/feature"
-	"github.com/whosonfirst/go-whosonfirst-iterate/emitter"
-	"github.com/whosonfirst/go-whosonfirst-iterate/iterator"
+	"github.com/whosonfirst/go-whosonfirst-iterate/v2/emitter"
+	"github.com/whosonfirst/go-whosonfirst-iterate/v2/iterator"
 	"github.com/whosonfirst/go-whosonfirst-svg"
 	"io"
 	"log"
@@ -28,13 +27,7 @@ func main() {
 	o.Width = *width
 	o.Height = *height
 
-	cb := func(ctx context.Context, fh io.ReadSeeker, args ...interface{}) error {
-
-		path, err := emitter.PathForContext(ctx)
-
-		if err != nil {
-			return err
-		}
+	cb := func(ctx context.Context, path string, fh io.ReadSeeker, args ...interface{}) error {
 
 		if path != emitter.STDIN {
 
@@ -45,7 +38,7 @@ func main() {
 			}
 		}
 
-		f, err := feature.LoadFeatureFromFile(path)
+		f, err := io.ReadAll(fh)
 
 		if err != nil {
 			// because this: https://github.com/whosonfirst/go-whosonfirst-svg/issues/3
